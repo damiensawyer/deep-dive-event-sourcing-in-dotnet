@@ -1,4 +1,5 @@
 using BeerSender.Domain;
+using BeerSender.Domain.Boxes;
 using BeerSender.Web.EventPublishing;
 using Marten;
 using Marten.Events.Daemon.Resiliency;
@@ -12,7 +13,6 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.RegisterDomain();
-builder.Services.AddTransient<INotificationService, NotificationService>();
 
 builder.Services.AddMarten(opt =>
 {
@@ -21,6 +21,11 @@ builder.Services.AddMarten(opt =>
     
     opt.ApplyDomainConfig();
     opt.AddProjections();
+})
+.AddSubscriptionWithServices<EventHubSubscription>(ServiceLifetime.Singleton, opt =>
+{
+    opt.FilterIncomingEventsOnStreamType(typeof(Box));
+    opt.Options.BatchSize = 10;
 })
 .AddAsyncDaemon(DaemonMode.Solo);
 
