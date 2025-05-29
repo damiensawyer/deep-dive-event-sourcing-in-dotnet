@@ -6,9 +6,9 @@ This repo contains all the code used in the Dometrain course "Deep Dive: Event S
 
 ## How to use this repository
 * The [main](/Dometrain/deep-dive-event-sourcing/tree/main) branch contains the code at the end of the course, in the most recent .NET version. This code will get updated to the most recent .NET version whenever this is appropriate.
-* The other branches will contain the entire course's content, commit-by-commit, for a specific version of .NET & Marten
+* The other branches will contain the entire course's content, commit-by-commit, for a specific version of .NET & Marten. The name of the commit represents the end of the lesson at which this commit was made.
 
-If you want to follow along with the course, use git checkout for the commit at the start of your lesson, and you should have the code in the same state as it is being used in the video.
+If you want to follow along with the course, use git checkout for the commit from the previous lesson, and you should have the code in the same state as it is being used in the video.
 
 ## Branches
 * .NET 9 & Marten 7: [net9-marten7](/Dometrain/deep-dive-event-sourcing/tree/net9-marten7)
