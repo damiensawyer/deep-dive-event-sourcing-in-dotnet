@@ -29,6 +29,8 @@ public class AddBeerBottleHandler(IDocumentStore store)
                 command.BoxId,
                 new BeerBottleAdded(command.BeerBottle));
         }
+
+        await session.SaveChangesAsync();
     }
 
 }

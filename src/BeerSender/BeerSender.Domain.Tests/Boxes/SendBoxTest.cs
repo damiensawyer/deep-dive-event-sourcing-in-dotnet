@@ -3,79 +3,80 @@ using BeerSender.Domain.Boxes.Commands;
 
 namespace BeerSender.Domain.Tests.Boxes;
 
-public class SendBoxTest : BoxTest<SendBox>
+public class SendBoxTest(MartenFixture fixture) 
+    : BoxTest<SendBox>(fixture)
 {
-    protected override CommandHandler<SendBox> Handler
-        => new SendBoxHandler(eventStore);
+    protected override ICommandHandler<SendBox> Handler
+        => new SendBoxHandler(Store);
     
     [Fact]
-    public void WhenBoxIsClosedAndHasLabel_ShouldSucceed()
+    public async Task WhenBoxIsClosedAndHasLabel_ShouldSucceed()
     {
-        Given(
+        await Given<Box>(
             Box_created_with_capacity(24),
             Beer_bottle_added(gouden_carolus),
             Box_was_closed(),
             Shipping_label_added_with_carrier_and_code(Carrier.UPS, "ABC123")
         );
 
-        When(
+        await When(
             Send_box()
         );
 
-        Then(
+        await Then(
             Box_was_sent()
         );
     }
 
     [Fact]
-    public void WhenBoxHasNoLabel_ShouldFail()
+    public async Task WhenBoxHasNoLabel_ShouldFail()
     {
-        Given(
+        await Given<Box>(
             Box_created_with_capacity(24),
             Beer_bottle_added(gouden_carolus),
             Box_was_closed()
         );
 
-        When(
+        await When(
             Send_box()
         );
 
-        Then(
+        await Then(
             Box_has_no_label()
         );
     }
 
     [Fact]
-    public void WhenIsNotClosed_ShouldFail()
+    public async Task WhenIsNotClosed_ShouldFail()
     {
-        Given(
+        await Given<Box>(
             Box_created_with_capacity(24),
             Beer_bottle_added(gouden_carolus),
             Shipping_label_added_with_carrier_and_code(Carrier.UPS, "ABC123")
         );
 
-        When(
+        await When(
             Send_box()
         );
 
-        Then(
+        await Then(
             Box_was_not_closed()
         );
     }
 
     [Fact]
-    public void WhenIsNotClosedAndHasNoLabel_ShouldFail()
+    public async Task WhenIsNotClosedAndHasNoLabel_ShouldFail()
     {
-        Given(
+        await Given<Box>(
             Box_created_with_capacity(24),
             Beer_bottle_added(gouden_carolus)
         );
 
-        When(
+        await When(
             Send_box()
         );
 
-        Then(
+        await Then(
             Box_was_not_closed(),
             Box_has_no_label()
         );

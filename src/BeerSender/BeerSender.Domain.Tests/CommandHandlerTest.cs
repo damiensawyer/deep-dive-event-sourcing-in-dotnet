@@ -1,13 +1,21 @@
 ﻿using FluentAssertions;
+using Marten;
 
 namespace BeerSender.Domain.Tests;
 
-/// <summary>
-/// Test base class for CommandHandler tests.
-/// </summary>
-/// <typeparam name="TCommand">The command type for the handler.</typeparam>
+[Collection("Marten collection")]
 public abstract class CommandHandlerTest<TCommand>
 {
+    private readonly Dictionary<Guid, long> _streamVersions = new();
+    
+    MartenFixture fixture;
+
+    protected CommandHandlerTest(MartenFixture fixture)
+    {
+        this.fixture = fixture;
+        Store = fixture.Store;
+    }
+    
     /// <summary>
     /// If no explicit aggregateId is provided, this one will be used behind the scenes.
     /// </summary>
@@ -17,57 +25,73 @@ public abstract class CommandHandlerTest<TCommand>
     /// The command handler, to be provided in the Test class.
     /// This to account for additional injections
     /// </summary>
-    protected abstract CommandHandler<TCommand> Handler { get; }
+    protected abstract ICommandHandler<TCommand> Handler { get; }
 
     /// <summary>
     /// A fake, in-memory event store.
     /// </summary>
-    protected TestStore eventStore = new();
+    protected IDocumentStore Store { get; private set; }
 
     /// <summary>
     /// Sets a list of previous events for the default aggregate ID.
     /// </summary>
-    protected void Given(params object[] events)
+    protected async Task Given<TAggregate>(params object[] events) 
+        where TAggregate : class
     {
-        Given(_aggregateId, events);
+        await Given<TAggregate>(_aggregateId, events);
     }
 
     /// <summary>
     /// Sets a list of previous events for a specified aggregate ID.
     /// </summary>
-    protected void Given(Guid aggregateId, params object[] events)
+    protected async Task Given<TAggregate>(Guid aggregateId, params object[] events) 
+        where TAggregate : class
     {
-        eventStore.PreviousEvents.AddRange(events
-            .Select((e,i) => new StoredEvent(aggregateId, i, DateTime.Now, e)));
+        if(events.IsEmpty())
+            return;
+        
+        await using var session = Store.LightweightSession();
+            
+        var stream = session.Events.StartStream<TAggregate>(aggregateId, events);
+
+        _streamVersions[aggregateId] = stream.Version + stream.Events.Count;
+                
+        await session.SaveChangesAsync();
     }
 
     /// <summary>
     /// Triggers the handling of a command against the configured events.
     /// </summary>
-    protected void When(TCommand command)
+    protected async Task When(TCommand command)
     {
-        Handler.Handle(command);
+        await Handler.Handle(command);
     }
 
     /// <summary>
     /// Asserts that the expected events have been appended to the event store
     /// for the default aggregate ID.
     /// </summary>
-    protected void Then(params object[] expectedEvents)
+    protected async Task Then(params object[] expectedEvents)
     {
-        Then(_aggregateId, expectedEvents);
+        await Then(_aggregateId, expectedEvents);
     }
 
     /// <summary>
     /// Asserts that the expected events have been appended to the event store
     /// for a specific aggregate ID.
     /// </summary>
-    protected void Then(Guid aggregateId, params object[] expectedEvents)
+    protected async Task Then(Guid aggregateId, params object[] expectedEvents)
     {
-        var actualEvents = eventStore.NewEvents
-            .Where(e => e.AggregateId == aggregateId)
-            .OrderBy(e => e.SequenceNumber)
-            .Select(e => e.EventData)
+        await using var session = Store.LightweightSession();
+
+        var version = _streamVersions.ContainsKey(aggregateId) 
+            ? _streamVersions[aggregateId] + 1
+            : 0L;
+        
+        var storedEvents = await session.Events.FetchStreamAsync(aggregateId, fromVersion: version);
+            var actualEvents = storedEvents
+            .OrderBy(e => e.Version)
+            .Select(e => e.Data)
             .ToArray();
 
         actualEvents.Length.Should().Be(expectedEvents.Length);

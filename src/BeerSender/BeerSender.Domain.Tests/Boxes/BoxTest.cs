@@ -2,7 +2,8 @@ using BeerSender.Domain.Boxes;
 
 namespace BeerSender.Domain.Tests.Boxes;
 
-public abstract class BoxTest<TCommand> : CommandHandlerTest<TCommand>
+public abstract class BoxTest<TCommand>(MartenFixture fixture) 
+    : CommandHandlerTest<TCommand>(fixture)
 {
     protected Guid Box_Id => _aggregateId;
     

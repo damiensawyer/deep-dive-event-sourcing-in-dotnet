@@ -2,10 +2,11 @@ using BeerSender.Domain.Boxes.Commands;
 
 namespace BeerSender.Domain.Tests.Boxes;
 
-public class CreateBoxTest : BoxTest<CreateBox>
+public class CreateBoxTest(MartenFixture fixture) 
+    : BoxTest<CreateBox>(fixture)
 {
-    protected override CommandHandler<CreateBox> Handler
-        => new CreateBoxHandler(eventStore);
+    protected override ICommandHandler<CreateBox> Handler
+        => new CreateBoxHandler(Store);
     
     [InlineData(0, 6)]
     [InlineData(5, 6)]
@@ -17,15 +18,13 @@ public class CreateBoxTest : BoxTest<CreateBox>
     [InlineData(23, 24)]
     [InlineData(24, 24)]
     [Theory]
-    public void WhenCreatedWithValidCapacity_ShouldCreateBox(
+    public async Task WhenCreatedWithValidCapacity_ShouldCreateBox(
         int desired_spots, int actual_spots)
     {
-        Given(
-        );
-        When(
+        await When(
             Create_box_for_capacity(desired_spots)
         );
-        Then(
+        await Then(
             Box_created_with_capacity(actual_spots)
         );
     }

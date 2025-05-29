@@ -3,10 +3,11 @@ using BeerSender.Domain.Boxes.Commands;
 
 namespace BeerSender.Domain.Tests.Boxes;
 
-public class AddShippingLabelTest : BoxTest<AddShippingLabel>
+public class AddShippingLabelTest(MartenFixture fixture) 
+    : BoxTest<AddShippingLabel>(fixture)
 {
-    protected override CommandHandler<AddShippingLabel> Handler
-        => new AddShippingLabelHandler(eventStore);
+    protected override ICommandHandler<AddShippingLabel> Handler
+        => new AddShippingLabelHandler(Store);
     
     [Theory]
     [InlineData(Carrier.UPS, "ABC123")]
@@ -15,16 +16,16 @@ public class AddShippingLabelTest : BoxTest<AddShippingLabel>
     [InlineData(Carrier.FedEx, "DEF999")]
     [InlineData(Carrier.BPost, "GHI123")]
     [InlineData(Carrier.BPost, "GHI999")]
-    public void WhenUsingValidLabel_ShouldAddLabel(
+    public async Task WhenUsingValidLabel_ShouldAddLabel(
         Carrier carrier, string tracking_code)
     {
-        Given(
+        await Given<Box>(
             Box_created_with_capacity(24)
         );
-        When(
+        await When(
             Add_label_with_carrier_and_code(carrier, tracking_code)
         );
-        Then(
+        await Then(
             Shipping_label_added_with_carrier_and_code(carrier, tracking_code)
         );
     }
@@ -36,18 +37,18 @@ public class AddShippingLabelTest : BoxTest<AddShippingLabel>
     [InlineData(Carrier.FedEx, "ZZZ999")]
     [InlineData(Carrier.BPost, "GH123")]
     [InlineData(Carrier.BPost, "ZZZ999")]
-    public void WhenUsingInvalidLabel_ShouldFail(
+    public async Task WhenUsingInvalidLabel_ShouldFail(
         Carrier carrier, string tracking_code)
     {
-        Given(
+        await Given<Box>(
             Box_created_with_capacity(24)
         );
 
-        When(
+        await When(
             Add_label_with_carrier_and_code(carrier, tracking_code)
         );
 
-        Then(
+        await Then(
             Tracking_code_was_invalid()
         );
     }

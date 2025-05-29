@@ -1,37 +1,39 @@
+using BeerSender.Domain.Boxes;
 using BeerSender.Domain.Boxes.Commands;
 
 namespace BeerSender.Domain.Tests.Boxes;
 
-public class CloseBoxTest : BoxTest<CloseBox>
+public class CloseBoxTest(MartenFixture fixture) 
+    : BoxTest<CloseBox>(fixture)
 {
-    protected override CommandHandler<CloseBox> Handler
-        => new CloseBoxHandler(eventStore);
+    protected override ICommandHandler<CloseBox> Handler
+        => new CloseBoxHandler(Store);
     
     [Fact]
-    public void WhenBoxIsNotEmpty_ShouldSucceed()
+    public async Task WhenBoxIsNotEmpty_ShouldSucceed()
     {
-        Given(
+        await Given<Box>(
             Box_created_with_capacity(24),
             Beer_bottle_added(gouden_carolus)
         );
-        When(
+        await When(
             Close_box()
         );
-        Then(
+        await Then(
             Box_was_closed()
         );
     }
 
     [Fact]
-    public void WhenBoxIsEmpty_ShouldFail()
+    public async Task WhenBoxIsEmpty_ShouldFail()
     {
-        Given(
+        await Given<Box>(
             Box_created_with_capacity(24)
         );
-        When(
+        await When(
             Close_box()
         );
-        Then(
+        await Then(
             Box_was_empty()
         );
     }

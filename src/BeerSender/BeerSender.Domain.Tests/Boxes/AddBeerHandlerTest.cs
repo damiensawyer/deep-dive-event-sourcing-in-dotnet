@@ -3,51 +3,52 @@ using BeerSender.Domain.Boxes.Commands;
 
 namespace BeerSender.Domain.Tests.Boxes;
 
-public class AddBeerHandlerTest : BoxTest<AddBeerBottle>
+public class AddBeerHandlerTest (MartenFixture fixture) 
+    : BoxTest<AddBeerBottle>(fixture)
 {
-    protected override CommandHandler<AddBeerBottle> Handler
-        => new AddBeerBottleHandler(eventStore);
-
+    protected override ICommandHandler<AddBeerBottle> Handler
+        => new AddBeerBottleHandler(Store);
+    
     [Fact]
-    public void IfBoxIsEmpty_ThenBottleShouldBeAdded()
+    public async Task IfBoxIsEmpty_ThenBottleShouldBeAdded()
     {
-        Given(
+        await Given<Box>(
             Box_created_with_capacity(6)
         );
-        When(
+        await When(
             Add_beer_bottle(carte_blanche)
         );
-        Then(
+        await Then(
             Beer_bottle_added(carte_blanche)
         );
     }
     
     [Fact]
-    public void WhenAddedToBoxWithSpace_ShouldAddBottle()
+    public async Task WhenAddedToBoxWithSpace_ShouldAddBottle()
     {
-        Given(
+        await Given<Box>(
             Box_created_with_capacity(2),
             Beer_bottle_added(gouden_carolus)
         );
-        When(
+        await When(
             Add_beer_bottle(carte_blanche)
         );
-        Then(
+        await Then(
             Beer_bottle_added(carte_blanche)
         );
     }
 
     [Fact]
-    public void WhenAddedToFullBox_ShouldFail()
+    public async Task WhenAddedToFullBox_ShouldFail()
     {
-        Given(
+        await Given<Box>(
             Box_created_with_capacity(1),
             Beer_bottle_added(gouden_carolus)
         );
-        When(
+        await When(
             Add_beer_bottle(carte_blanche)
         );
-        Then(
+        await Then(
             Box_was_full()
         );
     }
