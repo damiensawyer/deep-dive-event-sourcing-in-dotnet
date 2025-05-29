@@ -1,7 +1,7 @@
 using BeerSender.Domain;
-using BeerSender.EventStore;
 using BeerSender.Web.EventPublishing;
 using Marten;
+using Marten.Events.Daemon.Resiliency;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,14 +12,17 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.RegisterDomain();
-builder.Services.RegisterEventStore();
 builder.Services.AddTransient<INotificationService, NotificationService>();
 
 builder.Services.AddMarten(opt =>
 {
     var connectionString = builder.Configuration.GetConnectionString("Marten");
     opt.Connection(connectionString!);
-});
+    
+    opt.ApplyDomainConfig();
+    opt.AddProjections();
+})
+.AddAsyncDaemon(DaemonMode.Solo);
 
 var app = builder.Build();
 

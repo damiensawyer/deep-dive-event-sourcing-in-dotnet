@@ -1,45 +1,47 @@
-using BeerSender.Domain;
 using BeerSender.Domain.Boxes;
-using BeerSender.QueryAPI.Database;
+using BeerSender.Domain.Projections;
+using Marten;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeerSender.QueryAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BoxController(
-    IEventStore eventStore, 
-    BoxQueryRepository repository) : ControllerBase
+public class BoxController(IDocumentStore store) : ControllerBase
 {
     [HttpGet]
     [Route("{id:guid}")]
-    public Box GetById([FromRoute]Guid id)
+    public async Task<Box?> GetById([FromRoute]Guid id)
     {
-        var boxStream = new EventStream<Box>(eventStore, id);
-        var box = boxStream.GetEntity();
+        await using var session = store.QuerySession();
+        var box = await session.Events.AggregateStreamAsync<Box>(id);
         return box;
     }
 
     [HttpGet]
     [Route("{id:guid}/by-sequence/{sequence:int}")]
-    public Box GetById([FromRoute] Guid id, [FromRoute]int sequence)
+    public async Task<Box?> GetById([FromRoute] Guid id, [FromRoute]int sequence)
     {
-        var boxStream = new EventStream<Box>(eventStore, id);
-        var box = boxStream.GetEntityBySequence(sequence);
+        await using var session = store.QuerySession();
+        var box = await session.Events.AggregateStreamAsync<Box>(id, version: sequence);
         return box;
     }
 
     [HttpGet]
     [Route("all-open")]
-    public IEnumerable<OpenBox> GetOpenBoxes()
+    public async Task<IEnumerable<OpenBox>> GetOpenBoxes()
     {
-        return repository.GetAllOpen();
+        await using var session = store.QuerySession();
+        var boxes = await session.Query<OpenBox>().ToListAsync();
+        return boxes;
     }
 
     [HttpGet]
     [Route("all-unsent")]
-    public IEnumerable<UnsentBox> GetUnsentBoxes()
+    public async Task<IEnumerable<UnsentBox>> GetUnsentBoxes()
     {
-        return repository.GetAllUnsent();
+        await using var session = store.QuerySession();
+        var boxes = await session.Query<UnsentBox>().ToListAsync();
+        return boxes;
     }
 }

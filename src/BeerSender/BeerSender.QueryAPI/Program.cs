@@ -1,6 +1,5 @@
 using BeerSender.Domain;
-using BeerSender.EventStore;
-using BeerSender.QueryAPI.Database;
+using Marten;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +9,11 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.RegisterDomain();
-builder.Services.RegisterEventStore();
-builder.Services.RegisterReadDatabase();
+builder.Services.AddMarten(options =>
+{
+    options.Connection(builder.Configuration.GetConnectionString("Marten"));
+    options.ApplyDomainConfig();
+});
 
 var app = builder.Build();
 
