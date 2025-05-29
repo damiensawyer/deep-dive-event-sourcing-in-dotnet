@@ -1,10 +1,8 @@
-using BeerSender.Domain;
 using Marten;
 using Marten.Events.Daemon;
 using Marten.Events.Daemon.Internals;
 using Marten.Subscriptions;
 using Microsoft.AspNetCore.SignalR;
-using NotImplementedException = System.NotImplementedException;
 
 namespace BeerSender.Web.EventPublishing;
 

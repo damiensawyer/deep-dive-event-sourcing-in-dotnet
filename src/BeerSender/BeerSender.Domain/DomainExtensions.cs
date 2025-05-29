@@ -1,3 +1,4 @@
+using BeerSender.Domain.Boxes;
 using BeerSender.Domain.Boxes.Commands;
 using BeerSender.Domain.Projections;
 using Marten;
