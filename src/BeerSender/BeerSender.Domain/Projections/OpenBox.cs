@@ -1,5 +1,6 @@
 ﻿using BeerSender.Domain.Boxes;
 using Marten.Events;
+using Marten.Events.Aggregation;
 using Marten.Events.Projections;
 
 namespace BeerSender.Domain.Projections;
@@ -11,33 +12,23 @@ public class OpenBox
     public int NumberOfBottles { get; set; }
 }
 
-public class OpenBoxProjection : EventProjection
+public class OpenBoxProjection : SingleStreamProjection<OpenBox>
 {
     public OpenBoxProjection()
     {
-        Project<IEvent<BoxCreatedWithContainerType>>((evt, operations) =>
+        DeleteEvent<BoxClosed>();
+    }
+    
+    public static OpenBox Create(BoxCreatedWithContainerType started)
+    {
+        return new OpenBox
         {
-            operations.Store(new OpenBox
-            {
-                BoxId = evt.StreamId,
-                Capacity = evt.Data.BoxType.NumberOfSpots
-            });
-        });
+            Capacity = started.BoxType.NumberOfSpots
+        };
+    }
 
-        Project<IEvent<BoxClosed>>((evt, operations) =>
-        {
-            operations.Delete<OpenBox>(evt.StreamId);
-        });
-
-        ProjectAsync<IEvent<BeerBottleAdded>>(async (evt, operations) =>
-        {
-            var openBox = await operations.LoadAsync<OpenBox>(evt.StreamId);
-
-            if (openBox is null)
-                return;
-            openBox.NumberOfBottles++;
-            
-            operations.Store(openBox);
-        });
+    public void Apply(BeerBottleAdded _, OpenBox box)
+    {
+        box.NumberOfBottles++;
     }
 }
