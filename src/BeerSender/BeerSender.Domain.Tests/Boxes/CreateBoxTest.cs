@@ -1,3 +1,4 @@
+using BeerSender.Domain.Boxes;
 using BeerSender.Domain.Boxes.Commands;
 
 namespace BeerSender.Domain.Tests.Boxes;
@@ -31,6 +32,6 @@ public class CreateBoxTest(MartenFixture fixture)
 
     protected CreateBox Create_box_for_capacity(int desiredNumberOfSpots)
     {
-        return new CreateBox(Box_Id, desiredNumberOfSpots);
+        return new CreateBox(Box_Id, desiredNumberOfSpots, string.Empty, ContainerType.Bottle);
     }
 }
