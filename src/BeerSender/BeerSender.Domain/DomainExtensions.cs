@@ -1,5 +1,6 @@
 using BeerSender.Domain.Boxes;
 using BeerSender.Domain.Boxes.Commands;
+using BeerSender.Domain.JsonConfiguration;
 using BeerSender.Domain.Projections;
 using Marten;
 using Marten.Events.Projections;
@@ -23,11 +24,16 @@ public static class DomainExtensions
     
     public static void ApplyDomainConfig(this StoreOptions options)
     {
-        options.UseSystemTextJsonForSerialization();
+        options.UseSystemTextJsonForSerialization(configure: opt =>
+        {
+            opt.AllowOutOfOrderMetadataProperties = true;
+            opt.TypeInfoResolver = new CommandTypeResolver();
+        });
         
         options.Schema.For<UnsentBox>().Identity(u => u.BoxId);
         options.Schema.For<OpenBox>().Identity(o => o.BoxId);
         options.Schema.For<BottleInBoxes>().Identity(o => o.BottleId);
+        options.Schema.For<LoggedCommand>().Identity(o => o.CommandId);
 
         options.Events.Upcast<BoxCreatedUpcaster>();
     }
