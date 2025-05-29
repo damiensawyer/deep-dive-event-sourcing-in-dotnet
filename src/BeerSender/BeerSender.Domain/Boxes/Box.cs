@@ -11,7 +11,7 @@ public class Box
     public bool IsClosed { get; private set; }
     public bool IsSent { get; private set; }
 
-    public void Apply(BoxCreated @event)
+    public void Apply(BoxCreatedWithContainerType @event)
     {
         BoxType = @event.BoxType;
         FriendlyName = @event.FriendlyName;

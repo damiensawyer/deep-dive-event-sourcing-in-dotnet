@@ -14,7 +14,7 @@ public class UnsentBoxProjection : EventProjection
 {
     public UnsentBoxProjection()
     {
-        Project<IEvent<BoxCreated>>((evt, operations) =>
+        Project<IEvent<BoxCreatedWithContainerType>>((evt, operations) =>
         {
             operations.Store(new UnsentBox
             {

@@ -8,9 +8,9 @@ public abstract class BoxTest<TCommand>(MartenFixture fixture)
     protected Guid Box_Id => _aggregateId;
     
     // Events
-    protected BoxCreated Box_created_with_capacity(int capacity)
+    protected BoxCreatedWithContainerType Box_created_with_capacity(int capacity)
     {
-        return new BoxCreated(new BoxCapacity(capacity), string.Empty, ContainerType.Bottle);
+        return new BoxCreatedWithContainerType(new BoxCapacity(capacity), string.Empty, ContainerType.Bottle);
     }
 
     protected BeerBottleAdded Beer_bottle_added(BeerBottle bottle)

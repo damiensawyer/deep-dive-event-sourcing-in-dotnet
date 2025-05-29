@@ -15,7 +15,7 @@ public class OpenBoxProjection : EventProjection
 {
     public OpenBoxProjection()
     {
-        Project<IEvent<BoxCreated>>((evt, operations) =>
+        Project<IEvent<BoxCreatedWithContainerType>>((evt, operations) =>
         {
             operations.Store(new OpenBox
             {
