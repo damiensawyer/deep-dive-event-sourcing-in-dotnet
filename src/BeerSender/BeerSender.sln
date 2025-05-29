@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35506.116 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeerSender.Domain", "BeerSender.Domain\BeerSender.Domain.csproj", "{B7524BC1-6AE1-483C-902B-29FB0EC7A144}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeerSender.Domain.Tests", "BeerSender.Domain.Tests\BeerSender.Domain.Tests.csproj", "{F234F2EB-EB31-4610-B2E5-53E0DF9C6FC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeerSender.Web", "BeerSender.Web\BeerSender.Web.csproj", "{94F66665-7527-4390-9E09-D4535920DEFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeerSender.QueryAPI", "BeerSender.QueryAPI\BeerSender.QueryAPI.csproj", "{8CF2A096-D56C-4AC2-99F0-F50C970BCB3A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7524BC1-6AE1-483C-902B-29FB0EC7A144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7524BC1-6AE1-483C-902B-29FB0EC7A144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7524BC1-6AE1-483C-902B-29FB0EC7A144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7524BC1-6AE1-483C-902B-29FB0EC7A144}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F234F2EB-EB31-4610-B2E5-53E0DF9C6FC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F234F2EB-EB31-4610-B2E5-53E0DF9C6FC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F234F2EB-EB31-4610-B2E5-53E0DF9C6FC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F234F2EB-EB31-4610-B2E5-53E0DF9C6FC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94F66665-7527-4390-9E09-D4535920DEFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94F66665-7527-4390-9E09-D4535920DEFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94F66665-7527-4390-9E09-D4535920DEFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94F66665-7527-4390-9E09-D4535920DEFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CF2A096-D56C-4AC2-99F0-F50C970BCB3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CF2A096-D56C-4AC2-99F0-F50C970BCB3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CF2A096-D56C-4AC2-99F0-F50C970BCB3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CF2A096-D56C-4AC2-99F0-F50C970BCB3A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
