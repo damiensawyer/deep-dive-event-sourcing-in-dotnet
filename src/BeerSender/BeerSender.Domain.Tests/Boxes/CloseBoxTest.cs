@@ -7,7 +7,7 @@ public class CloseBoxTest(MartenFixture fixture)
     : BoxTest<CloseBox>(fixture)
 {
     protected override ICommandHandler<CloseBox> Handler
-        => new CloseBoxHandler(Store);
+        => new CloseBoxHandler();
     
     [Fact]
     public async Task WhenBoxIsNotEmpty_ShouldSucceed()

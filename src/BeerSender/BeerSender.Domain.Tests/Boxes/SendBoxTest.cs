@@ -7,7 +7,7 @@ public class SendBoxTest(MartenFixture fixture)
     : BoxTest<SendBox>(fixture)
 {
     protected override ICommandHandler<SendBox> Handler
-        => new SendBoxHandler(Store);
+        => new SendBoxHandler();
     
     [Fact]
     public async Task WhenBoxIsClosedAndHasLabel_ShouldSucceed()

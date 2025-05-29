@@ -11,46 +11,46 @@ public class BoxController(CommandRouter router) : ControllerBase
     [HttpPost]
     [Route("create")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public IActionResult CreateBox([FromBody]CreateBox command)
+    public async Task<IActionResult> CreateBox([FromBody]CreateBox command)
     {
         // You should probably map your external contracts.
-        router.HandleCommand(command);
+        await router.HandleCommand(command);
         return Accepted();
     }
     
     [HttpPost]
     [Route("add-bottle")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public IActionResult AddBottle([FromBody]AddBeerBottle command)
+    public async Task<IActionResult> AddBottle([FromBody]AddBeerBottle command)
     {
-        router.HandleCommand(command);
+        await router.HandleCommand(command);
         return Accepted();
     }
     
     [HttpPost]
     [Route("add-label")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public IActionResult AddLabel([FromBody]AddShippingLabel command)
+    public async Task<IActionResult> AddLabel([FromBody]AddShippingLabel command)
     {
-        router.HandleCommand(command);
+        await router.HandleCommand(command);
         return Accepted();
     }
     
     [HttpPost]
     [Route("close")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public IActionResult CloseBox([FromBody]CloseBox command)
+    public async Task<IActionResult> CloseBox([FromBody]CloseBox command)
     {
-        router.HandleCommand(command);
+        await router.HandleCommand(command);
         return Accepted();
     }
     
     [HttpPost]
     [Route("send")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public IActionResult SendBox([FromBody]SendBox command)
+    public async Task<IActionResult> SendBox([FromBody]SendBox command)
     {
-        router.HandleCommand(command);
+        await router.HandleCommand(command);
         return Accepted();
     }
 }

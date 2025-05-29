@@ -7,7 +7,7 @@ public class CreateBoxTest(MartenFixture fixture)
     : BoxTest<CreateBox>(fixture)
 {
     protected override ICommandHandler<CreateBox> Handler
-        => new CreateBoxHandler(Store);
+        => new CreateBoxHandler();
     
     [InlineData(0, 6)]
     [InlineData(5, 6)]

@@ -7,7 +7,7 @@ public class AddBeerHandlerTest (MartenFixture fixture)
     : BoxTest<AddBeerBottle>(fixture)
 {
     protected override ICommandHandler<AddBeerBottle> Handler
-        => new AddBeerBottleHandler(Store);
+        => new AddBeerBottleHandler();
     
     [Fact]
     public async Task IfBoxIsEmpty_ThenBottleShouldBeAdded()

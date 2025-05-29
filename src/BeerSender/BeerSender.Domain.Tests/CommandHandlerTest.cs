@@ -5,6 +5,7 @@ namespace BeerSender.Domain.Tests;
 
 [Collection("Marten collection")]
 public abstract class CommandHandlerTest<TCommand>
+    where TCommand : class, ICommand
 {
     private readonly Dictionary<Guid, long> _streamVersions = new();
     
@@ -64,7 +65,9 @@ public abstract class CommandHandlerTest<TCommand>
     /// </summary>
     protected async Task When(TCommand command)
     {
-        await Handler.Handle(command);
+        await using var session = Store.IdentitySession();
+        await Handler.Handle(session, command);
+        await session.SaveChangesAsync();
     }
 
     /// <summary>

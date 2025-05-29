@@ -7,7 +7,7 @@ public class AddShippingLabelTest(MartenFixture fixture)
     : BoxTest<AddShippingLabel>(fixture)
 {
     protected override ICommandHandler<AddShippingLabel> Handler
-        => new AddShippingLabelHandler(Store);
+        => new AddShippingLabelHandler();
     
     [Theory]
     [InlineData(Carrier.UPS, "ABC123")]
