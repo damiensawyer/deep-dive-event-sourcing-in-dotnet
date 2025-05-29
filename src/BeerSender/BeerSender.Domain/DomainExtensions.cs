@@ -27,6 +27,7 @@ public static class DomainExtensions
         
         options.Schema.For<UnsentBox>().Identity(u => u.BoxId);
         options.Schema.For<OpenBox>().Identity(o => o.BoxId);
+        options.Schema.For<BottleInBoxes>().Identity(o => o.BottleId);
 
         options.Events.Upcast<BoxCreatedUpcaster>();
     }
@@ -35,6 +36,7 @@ public static class DomainExtensions
     {
         options.Projections.Add<UnsentBoxProjection>(ProjectionLifecycle.Async);
         options.Projections.Add<OpenBoxProjection>(ProjectionLifecycle.Async);
+        options.Projections.Add<BottleInBoxesProjection>(ProjectionLifecycle.Async);
     }
 }
 
