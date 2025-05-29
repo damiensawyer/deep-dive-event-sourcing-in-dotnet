@@ -47,6 +47,8 @@ public static class DomainExtensions
         options.Projections.Add<UnsentBoxProjection>(ProjectionLifecycle.Async);
         options.Projections.Add<OpenBoxProjection>(ProjectionLifecycle.Async);
         options.Projections.Add<BottleInBoxesProjection>(ProjectionLifecycle.Async);
+
+        options.Projections.Snapshot<Box>(SnapshotLifecycle.Async);
     }
 }
 
