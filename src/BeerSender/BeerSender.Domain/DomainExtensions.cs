@@ -29,6 +29,10 @@ public static class DomainExtensions
             opt.AllowOutOfOrderMetadataProperties = true;
             opt.TypeInfoResolver = new CommandTypeResolver();
         });
+
+        options.Events.MetadataConfig.CorrelationIdEnabled = true;
+        options.Events.MetadataConfig.CausationIdEnabled = true;
+        options.Events.MetadataConfig.HeadersEnabled = true;
         
         options.Schema.For<UnsentBox>().Identity(u => u.BoxId);
         options.Schema.For<OpenBox>().Identity(o => o.BoxId);

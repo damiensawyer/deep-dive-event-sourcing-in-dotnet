@@ -22,11 +22,21 @@ public class CommandRouter(
         var commandId = Guid.NewGuid();
 
         StoreCommand(session, command, commandId);
+        ConfigureSession(session, commandId);
         
         var handle = (Task)methodInfo?.Invoke(handler, [session, command]);
         await handle;
 
         await session.SaveChangesAsync();
+    }
+
+    private void ConfigureSession(IDocumentSession session, Guid commandId)
+    {
+        session.CausationId = commandId.ToString();
+        // If the correlation flows in from another system, set it here.
+        session.CorrelationId = commandId.ToString();
+        // Add custom headers if desired
+        session.SetHeader("TraceIdentifier", httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty);
     }
 
     private void StoreCommand(IDocumentSession session, ICommand command, Guid commandId)
