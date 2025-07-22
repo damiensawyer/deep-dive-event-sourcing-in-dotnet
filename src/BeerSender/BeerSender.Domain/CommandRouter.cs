@@ -1,12 +1,12 @@
 using Marten;
-using Microsoft.AspNetCore.Http;
 
 namespace BeerSender.Domain;
 
+
+
 public class CommandRouter(
     IServiceProvider serviceProvider,
-    IDocumentStore store,
-    IHttpContextAccessor httpContextAccessor)
+    IDocumentStore store)
 {
     public async Task HandleCommand(ICommand command)
     {
@@ -16,14 +16,14 @@ public class CommandRouter(
         var methodInfo = handlerType.GetMethod("Handle");
 
         await using var session = store.IdentitySession();
-        
+
         // If you have a command ID from the outside (message ID, request ID, etc.)
         // You should use that over here
         var commandId = Guid.NewGuid();
 
         StoreCommand(session, command, commandId);
         ConfigureSession(session, commandId);
-        
+
         var handle = (Task)methodInfo?.Invoke(handler, [session, command]);
         await handle;
 
@@ -36,17 +36,17 @@ public class CommandRouter(
         // If the correlation flows in from another system, set it here.
         session.CorrelationId = commandId.ToString();
         // Add custom headers if desired
-        session.SetHeader("TraceIdentifier", httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty);
+        session.SetHeader("TraceIdentifier", "I deleted this");
     }
 
     private void StoreCommand(IDocumentSession session, ICommand command, Guid commandId)
     {
-        LoggedCommand loggedCommand = new (
+        LoggedCommand loggedCommand = new(
             commandId,
-            httpContextAccessor.HttpContext?.User.Identity?.Name,
+            "I deleted this",
             DateTime.UtcNow,
             command);
-        
+
         session.Insert(loggedCommand);
     }
 }
