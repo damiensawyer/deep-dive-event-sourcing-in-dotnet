@@ -2,11 +2,11 @@
 using Marten.Events.Projections;
 
 var connectionString = """
-                       User ID=postgres;
-                       Password=Marten123;
+                       User ID=docker;
+                       Password=docker;
                        Host=localhost;
                        Port=5432;
-                       Database=marten-demo;
+                       Database=marten;
                        Pooling=true;
                        """;
 
